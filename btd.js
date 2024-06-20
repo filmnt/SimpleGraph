@@ -284,3 +284,11 @@ drawLoop = function(){
 	requestAnimationFrame(drawLoop);
 }
 requestAnimationFrame(drawLoop);
+
+
+var input = document.querySelector('#clear-button');
+var textarea = document.querySelector('#functionText');
+
+input.addEventListener('click', function () {
+	textarea.value = '';
+}, false);
