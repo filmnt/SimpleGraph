@@ -1,419 +1,303 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Simple Graph</title>
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css">
-		<link rel="icon" type="image/gif" href="favicon.gif">
-	</head>
-	<body>
-		<div class="container-fluid">
-			<div class="row">
-				<div class="col-md-7" id="cContainer">
-					<canvas id="btdCanvas"></canvas>
-				</div>
-				<div class="col-md-5">
-					<form id="settingsForm">
-						<div class="row">
-							<div class="col-sm-12">
-								<div class="form-group">
-									<button style="float:right" id="clear-button" onclick="cleartext()">Clear</button>
-									<a href="https://filmnt.github.io/SimpleGraph/" target="_blank">Simple Graph</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Math" target="_blank">Documentation</a>
-									<textarea class="form-control" id="functionText" rows="6"></textarea>
-								</div>
-							</div>
-							<div class="col-sm-4">
-								<fieldset class="form-group">
-									<legend>Render type</legend>
-									<div class="form-check">
-										<label class="form-check-label">
-											<input type="radio" class="form-check-input" name="renderType" id="useDotRendering" checked>
-											Dot rendering
-										</label>
-									</div>
-									<div class="form-check">
-										<label class="form-check-label">
-											<input type="radio" class="form-check-input" name="renderType" id="useSecantRendering">
-											Secant rendering
-										</label>
-									</div>
-								</fieldset>
-							</div>
-							<div class="col-sm-4">
-								<fieldset class="form-group">
-									<legend>Zoom type</legend>
-									<div class="form-check">
-										<label class="form-check-label">
-											<input type="radio" class="form-check-input" name="zoomType" id="noCombineZoom" checked>
-											Individual zooming
-										</label>
-									</div>
-									<div class="form-check">
-										<label class="form-check-label">
-											<input type="radio" class="form-check-input" name="zoomType" id="combineZoom">
-											Combined zooming
-										</label>
-									</div>
-								</fieldset>
-							</div>
-							<div class="col-sm-4">
-								<fieldset class="form-group">
-									<legend>Interpretation type</legend>
-									<div class="form-check">
-										<label class="form-check-label">
-											<input type="radio" class="form-check-input" name="interpType" id="useJSInterpretation" checked>
-											JavaScript
-										</label>
-									</div>
-								</fieldset>
-							</div>
-							<div class="col-sm-12">
-								<div class="form-group">
-									<label for="divisionCount">Number of grid divisions to display (multiple of two)</label>
-									<input type="number" class="form-control form-control-sm" id="divisionCount" value=8>
-								</div>
-							</div>
-							<div class="col-sm-6">
-								<div class="form-group">
-									<label for="plotDensity">Plot density</label>
-									<input type="number" class="form-control form-control-sm" id="plotDensity" value=1>
-								</div>
-								<div class="form-group">
-									<label for="modifierZoom">Combined zoom</label>
-									<input type="number" class="form-control form-control-sm" id="modifierZoom" value=8>
-								</div>
-								<div class="form-group">
-									<label for="modifierZoomX">Individual X zoom</label>
-									<input type="number" class="form-control form-control-sm" id="modifierZoomX" value=4>
-								</div>
-								<div class="form-group">
-									<label for="modifierZoomY">Individual Y zoom</label>
-									<input type="number" class="form-control form-control-sm" id="modifierZoomY" value=4>
-								</div>
-							</div>
-							<div class="col-sm-6">
-								<div class="form-group">
-									<label for="axisStrokeWeight">X and Y axis stroke weight</label>
-									<input type="number" class="form-control form-control-sm" id="axisStrokeWeight" value=2>
-								</div>
-								<div class="form-group">
-									<label for="graphStrokeWeight">Grid line stroke weight</label>
-									<input type="number" class="form-control form-control-sm" id="graphStrokeWeight" value=0.5>
-								</div>
-								<div class="form-group">
-									<label for="functionStrokeWeight">Function stroke weight</label>
-									<input type="number" class="form-control form-control-sm" id="functionStrokeWeight" value=4>
-								</div>
-								<div class="form-group">
-									<label for="labelTextSize">Label text size</label>
-									<input type="number" class="form-control form-control-sm" id="labelTextSize" value=20>
-								</div>
+<head>
+	<meta charset="utf8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Simple Graph</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css">
+	<link rel="icon" type="image/gif" href="favicon.gif">
+	<style>
+		@media (max-width: 1000px) {
+			.col-md-7, .col-md-5 {
+				flex: 0 0 100%;
+				max-width: 100%;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-7" id="cContainer">
+				<canvas id="btdCanvas"></canvas>
+			</div>
+			<div class="col-md-5">
+				<form id="settingsForm">
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="form-group">
+								<button style="float:right" id="clear-button" onclick="cleartext()">Clear</button>
+								<a href="https://filmnt.github.io/SimpleGraph/" target="_blank">Simple Graph</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Math" target="_blank">Documentation</a>
+								<textarea class="form-control" id="functionText" rows="6"></textarea>
 							</div>
 						</div>
-					</form>
-				</div>
+						<div class="col-sm-4">
+							<fieldset class="form-group">
+								<legend>Render type</legend>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input type="radio" class="form-check-input" name="renderType" id="useDotRendering" checked>
+										Dot rendering
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input type="radio" class="form-check-input" name="renderType" id="useSecantRendering">
+										Secant rendering
+									</label>
+								</div>
+							</fieldset>
+						</div>
+						<div class="col-sm-4">
+							<fieldset class="form-group">
+								<legend>Zoom type</legend>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input type="radio" class="form-check-input" name="zoomType" id="noCombineZoom" checked>
+										Individual zooming
+									</label>
+								</div>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input type="radio" class="form-check-input" name="zoomType" id="combineZoom">
+										Combined zooming
+									</label>
+								</div>
+							</fieldset>
+						</div>
+						<div class="col-sm-4">
+							<fieldset class="form-group">
+								<legend>Interpretation type</legend>
+								<div class="form-check">
+									<label class="form-check-label">
+										<input type="radio" class="form-check-input" name="interpType" id="useJSInterpretation" checked>
+										JavaScript
+									</label>
+								</div>
+							</fieldset>
+						</div>
+						<div class="col-sm-12">
+							<div class="form-group">
+								<label for="divisionCount">Number of grid divisions to display (multiple of two)</label>
+								<input type="number" class="form-control form-control-sm" id="divisionCount" value=8>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="plotDensity">Plot density</label>
+								<input type="number" class="form-control form-control-sm" id="plotDensity" value=1>
+							</div>
+							<div class="form-group">
+								<label for="modifierZoom">Combined zoom</label>
+								<input type="number" class="form-control form-control-sm" id="modifierZoom" value=8>
+							</div>
+							<div class="form-group">
+								<label for="modifierZoomX">Individual X zoom</label>
+								<input type="number" class="form-control form-control-sm" id="modifierZoomX" value=4>
+							</div>
+							<div class="form-group">
+								<label for="modifierZoomY">Individual Y zoom</label>
+								<input type="number" class="form-control form-control-sm" id="modifierZoomY" value=4>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="axisStrokeWeight">X and Y axis stroke weight</label>
+								<input type="number" class="form-control form-control-sm" id="axisStrokeWeight" value=2>
+							</div>
+							<div class="form-group">
+								<label for="graphStrokeWeight">Grid line stroke weight</label>
+								<input type="number" class="form-control form-control-sm" id="graphStrokeWeight" value=0.5>
+							</div>
+							<div class="form-group">
+								<label for="functionStrokeWeight">Function stroke weight</label>
+								<input type="number" class="form-control form-control-sm" id="functionStrokeWeight" value=4>
+							</div>
+							<div class="form-group">
+								<label for="labelTextSize">Label text size</label>
+								<input type="number" class="form-control form-control-sm" id="labelTextSize" value=20>
+							</div>
+						</div>
+					</div>
+				</form>
 			</div>
 		</div>
-		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
-		<script>
-			var canvas = document.getElementById("btdCanvas");
-var ctx = canvas.getContext('2d');
-
-var functionObjects = [];
-var screenWidth;
-var divisionCount;
-var useSecantRendering;
-var useJSInterpretation;
-var plotDensity;
-var combineZoom;
-var modifierZoom;
-var modifierZoomX;
-var modifierZoomY;
-var axisStrokeWeight;
-var graphStrokeWeight;
-var functionStrokeWeight;
-var labelTextSize;
-var funcText;
-
-var pixelMid;
-var spacePerDivision;
-var baseScaleX;
-var baseScaleY;
-var scaleX;
-var scaleY;
-var secantBoundOffset;
-
-var colorList = [
-	"rgb(230, 25, 75)", //red
-	"rgb(60, 180, 75)", //green
-	"rgb(0, 130, 200)", //blue
-	"rgb(245, 130, 48)", //orange
-	"rgb(145, 30, 180)", //purple
-	"rgb(255, 225, 25)", //yellow
-	"rgb(70, 240, 240)", //cyan
-	"rgb(240, 50, 230)",  //magenta
-	"rgb(210, 245, 60)", //lime
-	"rgb(250, 190, 190)", //pink
-	"rgb(0, 128, 128)", //teal
-	"rgb(128, 128, 0)" //olive
-];
-
-var presetFormFromURL = function(){ //TODO: clean this up somehow?!
-	var pFuncText = (new URL(location)).searchParams.get("function");
-	if(pFuncText != null){
-		$("#functionText").val(pFuncText);
-	}
-	var pDivisionCount = (new URL(location)).searchParams.get("divisionCount");
-	if(pDivisionCount != null){
-		$("#divisionCount").val(pDivisionCount);
-	}
-	var pUseSecantRendering = (new URL(location)).searchParams.get("useSecantRendering");
-	if(pUseSecantRendering != null){
-		var pUseSecantRenderingBoolean = (pUseSecantRendering == 'true');
-		$("#useSecantRendering").prop("checked", pUseSecantRenderingBoolean);
-		$("#useDotRendering").prop("checked", !pUseSecantRenderingBoolean);
-	}
-	var pUseJSInterpretation = (new URL(location)).searchParams.get("useJSInterpretation");
-	if(pUseJSInterpretation != null){
-		var pUseJSInterpretationBoolean = (pUseJSInterpretation == 'true');
-		$("#useJSInterpretation").prop("checked", pUseJSInterpretationBoolean);
-		$("#useMathJSInterpretation").prop("checked", !pUseJSInterpretationBoolean);
-		$("#JSfunctionHint").toggle(pUseJSInterpretationBoolean);
-		$("#mathJSfunctionHint").toggle(!pUseJSInterpretationBoolean);
-	}
-	var pPlotDensity = (new URL(location)).searchParams.get("plotDensity");
-	if(pPlotDensity != null){
-		$("#plotDensity").val(pPlotDensity);
-	}
-	var pCombineZoom = (new URL(location)).searchParams.get("combineZoom");
-	if(pCombineZoom != null){
-		var pCombineZoomBoolean = (pCombineZoom == 'true');
-		$("#combineZoom").prop("checked", pCombineZoomBoolean);
-		$("#noCombineZoom").prop("checked", !pCombineZoomBoolean);
-	}
-	var pModifierZoom = (new URL(location)).searchParams.get("modifierZoom");
-	if(pModifierZoom != null){
-		$("#modifierZoom").val(pModifierZoom);
-	}
-	var pModifierZoomX = (new URL(location)).searchParams.get("modifierZoomX");
-	if(pModifierZoomX != null){
-		$("#modifierZoomX").val(pModifierZoomX);
-	}
-	var pModifierZoomY = (new URL(location)).searchParams.get("modifierZoomY");
-	if(pModifierZoomY != null){
-		$("#modifierZoomY").val(pModifierZoomY);
-	}
-	var pAxisStrokeWeight = (new URL(location)).searchParams.get("axisStrokeWeight");
-	if(pAxisStrokeWeight != null){
-		$("#axisStrokeWeight").val(pAxisStrokeWeight);
-	}
-	var pGraphStrokeWeight = (new URL(location)).searchParams.get("graphStrokeWeight");
-	if(pGraphStrokeWeight != null){
-		$("#graphStrokeWeight").val(pGraphStrokeWeight);
-	}
-	var pFunctionStrokeWeight = (new URL(location)).searchParams.get("functionStrokeWeight");
-	if(pFunctionStrokeWeight){
-		$("#functionStrokeWeight").val(pFunctionStrokeWeight);
-	}
-	var pLabelTextSize = (new URL(location)).searchParams.get("labelTextSize");
-	if(pLabelTextSize != null){
-		$("#labelTextSize").val(pLabelTextSize);
-	}
-	
-}
-presetFormFromURL();
-
-var updateForm = function(){
-	divisionCount = $("#divisionCount").val();
-	useSecantRendering = $("#useSecantRendering").is(":checked");
-
-	useJSInterpretation = $("#useJSInterpretation").is(":checked");
-	$("#JSfunctionHint").toggle(useJSInterpretation);
-	$("#mathJSfunctionHint").toggle(!useJSInterpretation);
-	
-	plotDensity = parseFloat($("#plotDensity").val());
-	combineZoom = $("#combineZoom").is(":checked");
-	modifierZoom = parseFloat($("#modifierZoom").val());
-	modifierZoomX = parseFloat($("#modifierZoomX").val());
-	modifierZoomY = parseFloat($("#modifierZoomY").val());
-	axisStrokeWeight = parseFloat($("#axisStrokeWeight").val());
-	graphStrokeWeight = parseFloat($("#graphStrokeWeight").val());
-	functionStrokeWeight = parseFloat($("#functionStrokeWeight").val());
-	labelTextSize = parseFloat($("#labelTextSize").val());
-	funcText = $("#functionText").val();
-	changeURL();
-	calculateValues();
-	evaluateFunctions();
-}
-
-var calculateValues = function(){
-	pixelMid = screenWidth / 2;
-	spacePerDivision = screenWidth / divisionCount;
-	void(combineZoom && ((modifierZoomX = modifierZoom) && (modifierZoomY = modifierZoom)));
-	baseScaleX = 1 / (screenWidth / 2);
-	baseScaleY = screenWidth / 2;
-	scaleX = baseScaleX * modifierZoomX;
-	scaleY = baseScaleY * 1 / modifierZoomY;
-	secantBoundOffset = plotDensity * 10;
-}
-
-var evaluateFunctions = function(){
-	functionObjects = [];
-	var funcTexts = funcText.split('\n');
-	for (var i = 0; i < funcTexts.length; i++) {
-		let newFunc;
-		try {
-			if(useJSInterpretation){ //Let's just eval that shi*
-				newFunc = new Function(["x"], "try{return " + funcTexts[i] + "}catch(e){}");
-			}else{ //Let's use math.js!
-				const mathNode = math.parse(funcTexts[i]);
-				const mathCode = mathNode.compile();
-				newFunc = function(x){
-					const scope = {
-						x: x, 
-						t: Date.now(),
-						r: Math.random()
-					};
-					try{
-						return mathCode.eval(scope);
-					}catch(e){
-						return NaN;
+	</div>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
+	<script>
+		var canvas = document.getElementById("btdCanvas");
+		var ctx = canvas.getContext('2d');
+		var functionObjects = [];
+		var screenWidth;
+		var divisionCount;
+		var useSecantRendering;
+		var useJSInterpretation;
+		var plotDensity;
+		var combineZoom;
+		var modifierZoom;
+		var modifierZoomX;
+		var modifierZoomY;
+		var axisStrokeWeight;
+		var graphStrokeWeight;
+		var functionStrokeWeight;
+		var labelTextSize;
+		var funcText;
+		var pixelMid;
+		var spacePerDivision;
+		var baseScaleX;
+		var baseScaleY;
+		var scaleX;
+		var scaleY;
+		var secantBoundOffset;
+		var colorList = ["rgb(230, 25, 75)","rgb(60, 180, 75)","rgb(0, 130, 200)","rgb(245, 130, 48)","rgb(145, 30, 180)","rgb(255, 225, 25)","rgb(70, 240, 240)","rgb(240, 50, 230)","rgb(210, 245, 60)","rgb(250, 190, 190)","rgb(0, 128, 128)","rgb(128, 128, 0)"];
+		var presetFormFromURL = function(){
+			var u = new URL(location);
+			var v = v => u.searchParams.get(v);
+			if(v("function")) $("#functionText").val(v("function"));
+			if(v("divisionCount")) $("#divisionCount").val(v("divisionCount"));
+			if(v("useSecantRendering")) $("#useSecantRendering").prop("checked", v("useSecantRendering") === 'true');
+			if(v("useSecantRendering")) $("#useDotRendering").prop("checked", v("useSecantRendering") !== 'true');
+			if(v("useJSInterpretation")) $("#useJSInterpretation").prop("checked", v("useJSInterpretation") === 'true');
+			if(v("plotDensity")) $("#plotDensity").val(v("plotDensity"));
+			if(v("combineZoom")) $("#combineZoom").prop("checked", v("combineZoom") === 'true');
+			if(v("combineZoom")) $("#noCombineZoom").prop("checked", v("combineZoom") !== 'true');
+			if(v("modifierZoom")) $("#modifierZoom").val(v("modifierZoom"));
+			if(v("modifierZoomX")) $("#modifierZoomX").val(v("modifierZoomX"));
+			if(v("modifierZoomY")) $("#modifierZoomY").val(v("modifierZoomY"));
+			if(v("axisStrokeWeight")) $("#axisStrokeWeight").val(v("axisStrokeWeight"));
+			if(v("graphStrokeWeight")) $("#graphStrokeWeight").val(v("graphStrokeWeight"));
+			if(v("functionStrokeWeight")) $("#functionStrokeWeight").val(v("functionStrokeWeight"));
+			if(v("labelTextSize")) $("#labelTextSize").val(v("labelTextSize"));
+		}
+		presetFormFromURL();
+		var updateForm = function(){
+			divisionCount = $("#divisionCount").val();
+			useSecantRendering = $("#useSecantRendering").is(":checked");
+			useJSInterpretation = $("#useJSInterpretation").is(":checked");
+			plotDensity = parseFloat($("#plotDensity").val());
+			combineZoom = $("#combineZoom").is(":checked");
+			modifierZoom = parseFloat($("#modifierZoom").val());
+			modifierZoomX = parseFloat($("#modifierZoomX").val());
+			modifierZoomY = parseFloat($("#modifierZoomY").val());
+			axisStrokeWeight = parseFloat($("#axisStrokeWeight").val());
+			graphStrokeWeight = parseFloat($("#graphStrokeWeight").val());
+			functionStrokeWeight = parseFloat($("#functionStrokeWeight").val());
+			labelTextSize = parseFloat($("#labelTextSize").val());
+			funcText = $("#functionText").val();
+			changeURL();
+			calculateValues();
+			evaluateFunctions();
+		}
+		var calculateValues = function(){
+			pixelMid = screenWidth / 2;
+			spacePerDivision = screenWidth / divisionCount;
+			if(combineZoom){modifierZoomX = modifierZoom; modifierZoomY = modifierZoom;}
+			baseScaleX = 1 / (screenWidth / 2);
+			baseScaleY = screenWidth / 2;
+			scaleX = baseScaleX * modifierZoomX;
+			scaleY = baseScaleY * 1 / modifierZoomY;
+			secantBoundOffset = plotDensity * 10;
+		}
+		var evaluateFunctions = function(){
+			functionObjects = [];
+			var funcTexts = funcText.split('\n');
+			for (var i = 0; i < funcTexts.length; i++) {
+				let newFunc;
+				try {
+					if(useJSInterpretation){
+						newFunc = new Function(["x"], "try{return " + funcTexts[i] + "}catch(e){}");
+					}else{
+						const mathNode = math.parse(funcTexts[i]);
+						const mathCode = mathNode.compile();
+						newFunc = function(x){
+							const scope = {x: x, t: Date.now(), r: Math.random()};
+							try{return mathCode.eval(scope);}catch(e){return NaN;}
+						}
+					}
+				} catch (e) {
+					newFunc = function(x) { return NaN; };
+				}
+				functionObjects.push({func: newFunc, color: colorList[i%funcTexts.length]});
+			}
+		}
+		var changeURL = function(){
+			var newURL = location.href.split("?")[0]
+			newURL += "?function=" + encodeURIComponent(funcText);
+			newURL += "&divisionCount=" + encodeURIComponent(divisionCount);
+			newURL += "&useSecantRendering=" + encodeURIComponent(useSecantRendering);
+			newURL += "&useJSInterpretation=" + encodeURIComponent(useJSInterpretation);
+			newURL += "&plotDensity=" + encodeURIComponent(plotDensity);
+			newURL += "&combineZoom=" + encodeURIComponent(combineZoom);
+			newURL += "&modifierZoom=" + encodeURIComponent(modifierZoom);
+			newURL += "&modifierZoomX=" + encodeURIComponent(modifierZoomX);
+			newURL += "&modifierZoomY=" + encodeURIComponent(modifierZoomY);
+			newURL += "&axisStrokeWeight=" + encodeURIComponent(axisStrokeWeight);
+			newURL += "&graphStrokeWeight=" + encodeURIComponent(graphStrokeWeight);
+			newURL += "&functionStrokeWeight=" + encodeURIComponent(functionStrokeWeight);
+			newURL += "&labelTextSize=" + encodeURIComponent(labelTextSize);
+			history.replaceState({}, '', newURL);
+		}
+		var resizeCanvas = function(){
+			screenWidth = $("#cContainer").width();
+			canvas.width = screenWidth;
+			canvas.height = screenWidth;
+			calculateValues();
+		};
+		$("#settingsForm").on('input change', updateForm);
+		updateForm();
+		$(window).on('resize', resizeCanvas);
+		resizeCanvas();
+		drawLoop = function(){
+			if(plotDensity <= 0){plotDensity = NaN;}
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			ctx.strokeStyle = "rgb(0,0,0)";
+			ctx.lineWidth = axisStrokeWeight;
+			ctx.beginPath(); ctx.moveTo(screenWidth / 2, 0); ctx.lineTo(screenWidth / 2, screenWidth); ctx.stroke();
+			ctx.beginPath(); ctx.moveTo(0, screenWidth / 2); ctx.lineTo(screenWidth, screenWidth / 2); ctx.stroke();
+			ctx.font = labelTextSize + 'px serif';
+			ctx.fillStyle = "rgb(0, 0, 0)";
+			var textSpacing = screenWidth / divisionCount;
+			ctx.strokeStyle = "rgb(48,48,48)";
+			ctx.lineWidth = graphStrokeWeight;
+			for (var i = -divisionCount / 2; i <= divisionCount / 2; i++) {
+				ctx.fillText(((i / divisionCount * 2) * modifierZoomX).toString(), (textSpacing * i) + pixelMid, pixelMid + labelTextSize);
+				ctx.fillText(((-i / divisionCount * 2) * modifierZoomY).toString(), pixelMid - labelTextSize, (textSpacing * i) + pixelMid);
+				var lineCoords = pixelMid + (screenWidth * i / divisionCount);
+				ctx.beginPath(); ctx.moveTo(lineCoords, 0); ctx.lineTo(lineCoords, screenWidth); ctx.stroke();
+				ctx.beginPath(); ctx.moveTo(0, lineCoords); ctx.lineTo(screenWidth, lineCoords); ctx.stroke();
+			}
+			ctx.lineWidth = functionStrokeWeight;
+			for (var k = -pixelMid; k <= pixelMid + plotDensity; k = k + plotDensity) {
+				for (var i = 0; i < functionObjects.length; i++) {
+					ctx.strokeStyle = functionObjects[i].color;
+					ctx.fillStyle = functionObjects[i].color;
+					var x1 = k + pixelMid;
+					var y1 = (-functionObjects[i].func(k * scaleX, i) * scaleY) + pixelMid;
+					if (useSecantRendering) {
+						var x2 = (k - plotDensity) + pixelMid;
+						var y2 = (-functionObjects[i].func((k - plotDensity) * scaleX, i) * scaleY) + pixelMid;
+						if (x1 > -secantBoundOffset && x1 <= screenWidth + secantBoundOffset && x2 > -secantBoundOffset && x2 <= screenWidth + secantBoundOffset && y1 > -secantBoundOffset && y1 <= screenWidth + secantBoundOffset && y2 > -secantBoundOffset && y2 <= screenWidth + secantBoundOffset) {
+							ctx.beginPath();
+							ctx.moveTo(x1, y1);
+							ctx.lineTo(x2, y2);
+							ctx.stroke();
+						}
+					} else {
+						ctx.fillRect(x1-(functionStrokeWeight/2), y1-(functionStrokeWeight/2),functionStrokeWeight,functionStrokeWeight);
 					}
 				}
 			}
-		} catch (e) {
-			newFunc = function(x) {
-				return NaN;
-			};
+			requestAnimationFrame(drawLoop);
 		}
-		functionObjects.push({
-			func: newFunc,
-			color: colorList[i%funcTexts.length]
-		});
-	}
-}
-
-var changeURL = function(){
-	var newURL = location.href.split("?")[0]
-	newURL += "?function=" + encodeURIComponent(funcText);
-	newURL += "&divisionCount=" + encodeURIComponent(divisionCount);
-	newURL += "&useSecantRendering=" + encodeURIComponent(useSecantRendering);
-	newURL += "&useJSInterpretation=" + encodeURIComponent(useJSInterpretation);
-	newURL += "&plotDensity=" + encodeURIComponent(plotDensity);
-	newURL += "&combineZoom=" + encodeURIComponent(combineZoom);
-	newURL += "&modifierZoom=" + encodeURIComponent(modifierZoom);
-	newURL += "&modifierZoomX=" + encodeURIComponent(modifierZoomX);
-	newURL += "&modifierZoomY=" + encodeURIComponent(modifierZoomY);
-	newURL += "&axisStrokeWeight=" + encodeURIComponent(axisStrokeWeight);
-	newURL += "&graphStrokeWeight=" + encodeURIComponent(graphStrokeWeight);
-	newURL += "&functionStrokeWeight=" + encodeURIComponent(functionStrokeWeight);
-	newURL += "&labelTextSize=" + encodeURIComponent(labelTextSize);
-	history.replaceState({}, '', newURL);
-}
-
-var resizeCanvas = function(){
-	screenWidth = $("#cContainer").width();
-	canvas.width = screenWidth;
-	canvas.height = screenWidth;
-	calculateValues();
-};
-
-$("#settingsForm").on('input change', updateForm);
-updateForm();
-
-$(window).on('resize', resizeCanvas);
-resizeCanvas();
-
-drawLoop = function(){
-	if(plotDensity <= 0){
-		plotDensity = NaN;
-	}
-
-	//Setup
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-	//Draw axis
-	ctx.strokeStyle = "rgb(0,0,0)";
-	ctx.lineWidth = axisStrokeWeight;
-
-	ctx.beginPath();
-	ctx.moveTo(screenWidth / 2, 0);
-	ctx.lineTo(screenWidth / 2, screenWidth);
-	ctx.stroke();
-
-	ctx.beginPath();
-	ctx.moveTo(0, screenWidth / 2);
-	ctx.lineTo(screenWidth, screenWidth / 2);
-	ctx.stroke();
-
-	//Draw grid
-	ctx.font = labelTextSize + 'px serif';
-	ctx.fillStyle = "rgb(0, 0, 0)";
-	var textSpacing = screenWidth / divisionCount;
-	ctx.strokeStyle = "rgb(48,48,48)";
-	ctx.lineWidth = graphStrokeWeight;
-	for (var i = -divisionCount / 2; i <= divisionCount / 2; i++) {
-		ctx.fillText(((i / divisionCount * 2) * modifierZoomX).toString(), (textSpacing * i) + pixelMid, pixelMid + labelTextSize);
-		ctx.fillText(((-i / divisionCount * 2) * modifierZoomY).toString(), pixelMid - labelTextSize, (textSpacing * i) + pixelMid);
-		var lineCoords = pixelMid + (screenWidth * i / divisionCount);
-
-		ctx.beginPath();
-		ctx.moveTo(lineCoords, 0);
-		ctx.lineTo(lineCoords, screenWidth);
-		ctx.stroke();
-
-		ctx.beginPath();
-		ctx.moveTo(0, lineCoords);
-		ctx.lineTo(screenWidth, lineCoords);
-		ctx.stroke();
-	}
-
-	//Draw functions
-	ctx.lineWidth = functionStrokeWeight;
-	for (var k = -pixelMid; k <= pixelMid + plotDensity; k = k + plotDensity) { //From left to right on x axis
-		for (var i = 0; i < functionObjects.length; i++) { //For each function
-			ctx.strokeStyle = functionObjects[i].color;
-			ctx.fillStyle = functionObjects[i].color;
-			var x1 = k + pixelMid;
-			var y1 = (-functionObjects[i].func(k * scaleX, i) * scaleY) + pixelMid; //Evaluate point
-			if (useSecantRendering) {
-				var x2 = (k - plotDensity) + pixelMid;
-				var y2 = (-functionObjects[i].func((k - plotDensity) * scaleX, i) * scaleY) + pixelMid; //Evaluate second secant point
-				if (
-					x1 > (0 - secantBoundOffset) &&
-					x1 <= (screenWidth + secantBoundOffset) &&
-					x2 > (0 - secantBoundOffset) &&
-					x2 <= (screenWidth + secantBoundOffset) &&
-					y1 > (0 - secantBoundOffset) &&
-					y1 <= (screenWidth + secantBoundOffset) &&
-					y2 > (0 - secantBoundOffset) &&
-					y2 <= (screenWidth + secantBoundOffset)
-				) {
-					ctx.beginPath();
-					ctx.moveTo(x1, y1);
-					ctx.lineTo(x2, y2);
-					ctx.stroke();
-				}
-			} else {
-				ctx.fillRect(x1-(functionStrokeWeight/2), y1-(functionStrokeWeight/2),functionStrokeWeight,functionStrokeWeight);
-			}
-		}
-	}
-	requestAnimationFrame(drawLoop);
-}
-requestAnimationFrame(drawLoop);
-
-
-var input = document.querySelector('#clear-button');
-var textarea = document.querySelector('#functionText');
-
-input.addEventListener('click', function () {
-	textarea.value = '';
-}, false);
-		</script>
-	</body>
+		requestAnimationFrame(drawLoop);
+		var input = document.querySelector('#clear-button');
+		var textarea = document.querySelector('#functionText');
+		input.addEventListener('click', function () {
+			textarea.value = '';
+		}, false);
+	</script>
+</body>
 </html>
